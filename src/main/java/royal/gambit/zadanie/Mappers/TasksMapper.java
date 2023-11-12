@@ -16,6 +16,8 @@ public interface TasksMapper {
 
     TaskEntity editTaskDTOToEntity(EditTaskDTO taskDTO);
 
+    TaskEntity showTaskDTOToEntity(ShowTaskDTO taskDTO);
+
     @AfterMapping
     default void setFirstEditionDate(CreateTaskDTO taskDTO, @MappingTarget TaskEntity taskEntity) {
         taskEntity.setEditionDate(taskDTO.getCreationDate());
