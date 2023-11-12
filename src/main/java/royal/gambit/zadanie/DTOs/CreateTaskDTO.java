@@ -5,8 +5,7 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-public class CreateEditTaskDTO {
+public class CreateTaskDTO {
     private String content;
     private LocalDate creationDate;
-    private LocalDate editionDate;
 }
