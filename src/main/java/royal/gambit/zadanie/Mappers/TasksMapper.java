@@ -1,9 +1,7 @@
 package royal.gambit.zadanie.Mappers;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 import royal.gambit.zadanie.DTOs.CreateTaskDTO;
 import royal.gambit.zadanie.DTOs.EditTaskDTO;
@@ -14,7 +12,7 @@ import royal.gambit.zadanie.Entities.TaskEntity;
 public interface TasksMapper {
     // DTO to Entity block
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "editionDate", ignore = true)
+    @Mapping(target = "editionDate", source = "creationDate")
     TaskEntity createTaskDTOToEntity(CreateTaskDTO taskDTO);
 
     @Mapping(target = "id", ignore = true)
@@ -22,11 +20,6 @@ public interface TasksMapper {
     TaskEntity editTaskDTOToEntity(EditTaskDTO taskDTO);
 
     TaskEntity showTaskDTOToEntity(ShowTaskDTO taskDTO);
-
-    @AfterMapping
-    default void setFirstEditionDate(CreateTaskDTO taskDTO, @MappingTarget TaskEntity taskEntity) {
-        taskEntity.setEditionDate(taskDTO.getCreationDate());
-    }
 
     // Entity to DTO block
     EditTaskDTO TaskEntityToEditDTO(TaskEntity taskEntity);
