@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Example;
 
+import royal.gambit.zadanie.DTOs.CreateTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Mappers.TasksMapper;
@@ -66,5 +67,25 @@ public class TasksServiceUnitsTest {
         when(tasksMapper.TaskEntityToShowDTO(foundEntity)).thenReturn(any(ShowTaskDTO.class));
 
         tasksService.findTask(id);
+    }
+
+    @Test
+    public void createTaskCorrectDataPassing() {
+        CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
+                .content("some content")
+                .build();
+        TaskEntity mappedEntity = TaskEntity.builder()
+                .content("some content")
+                .build();
+        TaskEntity newEntity = TaskEntity.builder()
+                .id(new Long(4))
+                .content("some content")
+                .build();
+
+        when(tasksMapper.createTaskDTOToEntity(createTaskDTO)).thenReturn(mappedEntity);
+        when(tasksRepository.save(mappedEntity)).thenReturn(newEntity);
+        when(tasksMapper.TaskEntityToShowDTO(newEntity)).thenReturn(any(ShowTaskDTO.class));
+
+        tasksService.createTask(createTaskDTO);
     }
 }
