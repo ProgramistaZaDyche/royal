@@ -58,7 +58,12 @@ public class TasksServiceUnitsTest {
     @Test
     public void findTaskCorrectId() {
         Long id = new Long(4);
-        when(tasksRepository.findById(new Long(4))).thenReturn(Optional.of(new TaskEntity()));
+        TaskEntity foundEntity = TaskEntity.builder()
+                .id(id)
+                .build();
+
+        when(tasksRepository.findById(new Long(4))).thenReturn(Optional.of(foundEntity));
+        when(tasksMapper.TaskEntityToShowDTO(foundEntity)).thenReturn(any(ShowTaskDTO.class));
 
         tasksService.findTask(id);
     }
