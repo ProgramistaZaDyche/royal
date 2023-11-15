@@ -83,6 +83,6 @@ public class TasksControllerIntegrationTest {
   public void findTaskWithInexistingId() throws Exception {
     mockMvc.perform(get("/tasks/2"))
         .andExpect(status().isNotFound())
-        .andExpect(content().json("{\"title\":\"Nonexistent Record Error!\"}"));
+        .andExpect(jsonPath("$.title", is("Nonexistent Record Error!")));
   }
 }
