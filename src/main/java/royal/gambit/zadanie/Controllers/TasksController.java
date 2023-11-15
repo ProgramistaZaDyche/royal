@@ -9,11 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import royal.gambit.zadanie.DTOs.CreateTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Services.TasksService;
 
@@ -35,5 +38,12 @@ public class TasksController {
     public ResponseEntity<ShowTaskDTO> findTask(
             @NonNull @PathVariable Long id) {
         return new ResponseEntity<>(tasksService.findTask(id), HttpStatus.OK);
+    }
+
+    @PostMapping("")
+    @ApiOperation("Create new task")
+    public ResponseEntity<ShowTaskDTO> createTask(
+            @RequestBody CreateTaskDTO createTaskDTO) {
+        return new ResponseEntity<>(tasksService.createTask(createTaskDTO), HttpStatus.CREATED);
     }
 }

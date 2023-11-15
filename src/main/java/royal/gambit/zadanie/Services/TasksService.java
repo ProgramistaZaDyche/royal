@@ -7,6 +7,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import royal.gambit.zadanie.DTOs.CreateTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Exceptions.NonExistentRecordException;
@@ -31,6 +32,13 @@ public class TasksService {
     public ShowTaskDTO findTask(Long id) {
         TaskEntity taskEntity = findTaskById(id);
         return tasksMapper.TaskEntityToShowDTO(taskEntity);
+    }
+
+    public ShowTaskDTO createTask(CreateTaskDTO createTaskDTO) {
+        TaskEntity entityToCreate = tasksMapper.createTaskDTOToEntity(createTaskDTO);
+        
+        TaskEntity newEntity = tasksRepository.save(entityToCreate);
+        return tasksMapper.TaskEntityToShowDTO(newEntity);
     }
 
     private TaskEntity findTaskById(Long id) {
