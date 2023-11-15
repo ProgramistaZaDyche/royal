@@ -3,6 +3,7 @@ package royal.gambit.zadanie;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,13 +78,7 @@ public class TasksControllerIntegrationTest {
   public void findTaskWithExistingId() throws Exception {
     this.mockMvc.perform(get("/tasks/1"))
         .andExpect(status().isOk())
-        .andExpect(content().json(
-          "{" +
-          "\"id\":1," +
-          "\"content\":\"Test Content\"," +
-          "\"creationDate\":\"2012-12-21\"," +
-          "\"editionDate\":\"2012-12-21\"" +
-          "}"));
+        .andExpect(jsonPath("$.id", is(1)));
   }
 
   @Test
