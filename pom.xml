@@ -100,6 +100,13 @@
 			<artifactId>mapstruct-processor</artifactId>
 			<version>${org.mapstruct.version}</version>
     	</dependency>
+
+		<!-- jackson dependency needed to deserialize JSON into class from java.time-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.12.7</version>
+		</dependency>
 	</dependencies>
 
 	<build>
