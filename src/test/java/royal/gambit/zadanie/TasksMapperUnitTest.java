@@ -71,7 +71,7 @@ public class TasksMapperUnitTest {
     }
 
     @Test
-    public void TaskEntityToEditDTO() {
+    public void taskEntityToEditDTO() {
         TaskEntity entity = TaskEntity.builder()
                 .id(Long.valueOf(1))
                 .content("content")
@@ -86,7 +86,7 @@ public class TasksMapperUnitTest {
     }
 
     @Test
-    public void TaskEntityToShowDTO() {
+    public void taskEntityToShowDTO() {
         TaskEntity entity = TaskEntity.builder()
                 .id(Long.valueOf(1))
                 .content("content")
