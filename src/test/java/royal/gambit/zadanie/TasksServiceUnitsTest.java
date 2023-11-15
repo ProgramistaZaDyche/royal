@@ -1,7 +1,9 @@
 package royal.gambit.zadanie;
 
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,7 @@ public class TasksServiceUnitsTest {
     }
 
     @Test
-    public void findTasksCorrectParameters() {
+    public void findTasksCorrectFilter() {
         ShowTaskDTO filterDTO = ShowTaskDTO.builder()
                 .content("Tests")
                 .build();
@@ -51,5 +53,13 @@ public class TasksServiceUnitsTest {
         when(tasksRepository.findAll(filterExample)).thenReturn(anyList());
 
         tasksService.findTasks(filterDTO);
+    }
+
+    @Test
+    public void findTaskCorrectId() {
+        Long id = new Long(4);
+        when(tasksRepository.findById(new Long(4))).thenReturn(Optional.of(new TaskEntity()));
+
+        tasksService.findTask(id);
     }
 }
