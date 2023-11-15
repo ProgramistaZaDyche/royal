@@ -38,7 +38,7 @@ public class TasksServiceUnitsTest {
     }
 
     @Test
-    public void findTasksCorrectFilter() {
+    public void findTasksCorrectDataPassing() {
         ShowTaskDTO filterDTO = ShowTaskDTO.builder()
                 .content("Tests")
                 .build();
@@ -56,7 +56,7 @@ public class TasksServiceUnitsTest {
     }
 
     @Test
-    public void findTaskCorrectId() {
+    public void findTaskCorrectDataPassing() {
         Long id = new Long(4);
         TaskEntity foundEntity = TaskEntity.builder()
                 .id(id)
