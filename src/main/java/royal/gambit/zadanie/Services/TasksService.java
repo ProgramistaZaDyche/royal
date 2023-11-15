@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
+import royal.gambit.zadanie.Exceptions.NonExistentRecordException;
 import royal.gambit.zadanie.Mappers.TasksMapper;
 import royal.gambit.zadanie.Repositories.TasksRepository;
 
@@ -25,5 +26,15 @@ public class TasksService {
         return tasksRepository.findAll(example).stream()
                 .map(tasksMapper::TaskEntityToShowDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ShowTaskDTO findTask(Long id) {
+        TaskEntity taskEntity = findTaskById(id);
+        return tasksMapper.TaskEntityToShowDTO(taskEntity);
+    }
+
+    private TaskEntity findTaskById(Long id) {
+        return tasksRepository.findById(id)
+                .orElseThrow(() -> new NonExistentRecordException(String.format("There is no task with id = %d", id)));
     }
 }
