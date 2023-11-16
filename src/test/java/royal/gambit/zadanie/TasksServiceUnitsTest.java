@@ -71,15 +71,20 @@ public class TasksServiceUnitsTest {
 
     @Test
     public void createTaskCorrectDataPassing() {
+        String content = "some content";
+        LocalDate creationDate = LocalDate.of(2023, 2, 14);
         CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
-                .content("some content")
+                .content(content)
+                .creationDate(creationDate)
                 .build();
         TaskEntity mappedEntity = TaskEntity.builder()
-                .content("some content")
+                .content(content)
+                .creationDate(creationDate)
                 .build();
         TaskEntity newEntity = TaskEntity.builder()
                 .id(new Long(4))
-                .content("some content")
+                .content(content)
+                .creationDate(creationDate)
                 .build();
 
         when(tasksMapper.createTaskDTOToEntity(createTaskDTO)).thenReturn(mappedEntity);
