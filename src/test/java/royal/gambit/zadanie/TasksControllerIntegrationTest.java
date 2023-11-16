@@ -94,7 +94,7 @@ public class TasksControllerIntegrationTest {
 
   @Test
   @Sql(scripts = "classpath:sql/insertSingleTask.sql")
-  public void findTaskWithInexistingId() throws Exception {
+  public void findTaskWithNonExistingId() throws Exception {
     mockMvc.perform(get("/tasks/2"))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.title", is("Nonexistent Record Error!")));
