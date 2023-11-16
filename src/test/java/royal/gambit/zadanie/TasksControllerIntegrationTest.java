@@ -243,4 +243,17 @@ public class TasksControllerIntegrationTest {
         .content(editTaskJSON))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  @Sql(scripts = "classpath:sql/insertSingleTask.sql")
+  public void deleteTaskExistingTask() throws Exception {
+    mockMvc.perform(delete("/tasks/1"))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void deleteTaskNonExistingTask() throws Exception {
+    mockMvc.perform(delete("/tasks/1"))
+        .andExpect(status().isNotFound());
+  }
 }
