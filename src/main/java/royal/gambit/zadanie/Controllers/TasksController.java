@@ -43,7 +43,7 @@ public class TasksController {
     @PostMapping("")
     @ApiOperation("Create new task")
     public ResponseEntity<ShowTaskDTO> createTask(
-            @RequestBody CreateTaskDTO createTaskDTO) {
+            @NonNull @RequestBody CreateTaskDTO createTaskDTO) {
         return new ResponseEntity<>(tasksService.createTask(createTaskDTO), HttpStatus.CREATED);
     }
 }

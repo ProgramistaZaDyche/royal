@@ -35,6 +35,7 @@ public class TasksService {
     }
 
     public ShowTaskDTO createTask(CreateTaskDTO createTaskDTO) {
+        validateCreateTaskDTO(createTaskDTO);
         TaskEntity entityToCreate = tasksMapper.createTaskDTOToEntity(createTaskDTO);
         
         TaskEntity newEntity = tasksRepository.save(entityToCreate);
@@ -44,5 +45,19 @@ public class TasksService {
     private TaskEntity findTaskById(Long id) {
         return tasksRepository.findById(id)
                 .orElseThrow(() -> new NonExistentRecordException(String.format("There is no task with id = %d", id)));
+    }
+
+    private void validateCreateTaskDTO(CreateTaskDTO createTaskDTO) {
+        StringBuilder sb = new StringBuilder();
+        if (createTaskDTO.getContent() == null) {
+            sb.append("Content cannot be null!\n");
+        }
+        if (createTaskDTO.getCreationDate() == null) {
+            sb.append("Creation date cannot be null!\n");
+        }
+
+        if (sb.length() > 0) {
+            throw new InvalidDTOException(sb.toString(), "CreateTask");
+        }
     }
 }

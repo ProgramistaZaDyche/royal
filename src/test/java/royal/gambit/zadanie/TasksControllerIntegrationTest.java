@@ -167,4 +167,20 @@ public class TasksControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(2)));
   }
+
+  @Test
+  public void createTaskInvalidDTOSent() throws Exception {
+    CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
+        .content("Test Content")
+        .build();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    String createTaskJSON = objectMapper.writeValueAsString(createTaskDTO);
+
+    mockMvc.perform(post("/tasks")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(createTaskJSON))
+        .andExpect(status().isBadRequest());
+  }
 }
