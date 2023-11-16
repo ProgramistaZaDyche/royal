@@ -12,7 +12,7 @@ import royal.gambit.zadanie.DTOs.CreateTaskDTO;
 import royal.gambit.zadanie.DTOs.EditTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
-import royal.gambit.zadanie.Exceptions.InvalidDTOException;
+import royal.gambit.zadanie.Exceptions.ValidationException;
 import royal.gambit.zadanie.Exceptions.NonExistentRecordException;
 import royal.gambit.zadanie.Mappers.TasksMapper;
 import royal.gambit.zadanie.Repositories.TasksRepository;
@@ -103,7 +103,7 @@ public class TasksService {
         }
 
         if (sb.length() > 0) {
-            throw new InvalidDTOException(sb.toString(), "CreateTask");
+            throw new ValidationException(sb.toString(), "CreateTask");
         }
     }
 
@@ -121,7 +121,7 @@ public class TasksService {
         }
 
         if (sb.length() > 0) {
-            throw new InvalidDTOException(sb.toString(), "EditTask");
+            throw new ValidationException(sb.toString(), "EditTask");
         }
     }
 }

@@ -2,8 +2,8 @@ package royal.gambit.zadanie.Exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class InvalidDTOException extends CustomException {
-    public InvalidDTOException(String message, String DTOName) {
+public class ValidationException extends CustomException {
+    public ValidationException(String message, String DTOName) {
         super(createTitle(DTOName), message, HttpStatus.BAD_REQUEST);
     }
 
