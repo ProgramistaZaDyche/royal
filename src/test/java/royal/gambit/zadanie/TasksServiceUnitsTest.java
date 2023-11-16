@@ -40,6 +40,10 @@ public class TasksServiceUnitsTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    // Tests *CorrectDataPassing check whether objects are not unnecessarily
+    // modified somewhere between receiving the value and calling the
+    // mappers/repositories methods.
+
     @Test
     public void findTasksCorrectDataPassing() {
         ShowTaskDTO filterDTO = ShowTaskDTO.builder()
