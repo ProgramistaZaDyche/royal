@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShowTaskDTO {
-	private Long id;
+    private Long id;
     private String content;
     private LocalDate creationDate;
     private LocalDate editionDate;
