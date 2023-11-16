@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import io.swagger.annotations.ApiOperation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import royal.gambit.zadanie.DTOs.CreateTaskDTO;
-import royal.gambit.zadanie.DTOs.EditTaskDTO;
+import royal.gambit.zadanie.DTOs.SaveTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Services.TasksService;
 
@@ -46,16 +45,16 @@ public class TasksController {
     @PostMapping("")
     @ApiOperation("Create new task")
     public ResponseEntity<ShowTaskDTO> createTask(
-            @NonNull @RequestBody CreateTaskDTO createTaskDTO) {
-        return new ResponseEntity<>(tasksService.createTask(createTaskDTO), HttpStatus.CREATED);
+            @NonNull @RequestBody SaveTaskDTO saveTaskDTO) {
+        return new ResponseEntity<>(tasksService.createTask(saveTaskDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ApiOperation("Edit existing task")
     public ResponseEntity<ShowTaskDTO> editTask(
             @NonNull @PathVariable Long id,
-            @NonNull @RequestBody EditTaskDTO editTaskDTO) {
-        return new ResponseEntity<>(tasksService.editTask(id, editTaskDTO), HttpStatus.OK);
+            @NonNull @RequestBody SaveTaskDTO SaveTaskDTO) {
+        return new ResponseEntity<>(tasksService.editTask(id, SaveTaskDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

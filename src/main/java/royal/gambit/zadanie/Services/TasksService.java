@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import royal.gambit.zadanie.DTOs.CreateTaskDTO;
-import royal.gambit.zadanie.DTOs.EditTaskDTO;
+import royal.gambit.zadanie.DTOs.SaveTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Exceptions.ValidationException;
@@ -49,23 +48,23 @@ public class TasksService {
         return tasksMapper.TaskEntityToShowDTO(taskEntity);
     }
 
-    public ShowTaskDTO createTask(CreateTaskDTO createTaskDTO) {
-        log.debug("Received createDTO: {}", createTaskDTO);
-        validateCreateTaskDTO(createTaskDTO);
+    public ShowTaskDTO createTask(SaveTaskDTO saveTaskDTO) {
+        log.debug("Received createDTO: {}", saveTaskDTO);
+        validateSaveTaskDTO(saveTaskDTO);
 
-        TaskEntity entityToCreate = tasksMapper.createTaskDTOToEntity(createTaskDTO);
+        TaskEntity entityToCreate = tasksMapper.saveTaskDTOCreateEntity(saveTaskDTO);
         TaskEntity newEntity = tasksRepository.save(entityToCreate);
         log.trace("Created entity: {}", newEntity);
 
         return tasksMapper.TaskEntityToShowDTO(newEntity);
     }
 
-    public ShowTaskDTO editTask(Long id, EditTaskDTO editTaskDTO) {
-        log.debug("Received editTaskDTO {} and id {} ", editTaskDTO, id);
-        validateEditTaskDTO(editTaskDTO);
+    public ShowTaskDTO editTask(Long id, SaveTaskDTO SaveTaskDTO) {
+        log.debug("Received SaveTaskDTO {} and id {} ", SaveTaskDTO, id);
+        validateSaveTaskDTO(SaveTaskDTO);
         TaskEntity existingEntity = findTaskById(id);
 
-        TaskEntity editEntity = tasksMapper.editTaskDTOToEntity(editTaskDTO);
+        TaskEntity editEntity = tasksMapper.saveTaskDTOEditEntity(SaveTaskDTO);
         editEntity.setId(id);
         editEntity.setCreationDate(existingEntity.getCreationDate());
 
@@ -89,35 +88,13 @@ public class TasksService {
                 .orElseThrow(() -> new NonExistentRecordException(String.format("There is no task with id = %d", id)));
     }
 
-    private void validateCreateTaskDTO(CreateTaskDTO createTaskDTO) {
-        log.traceEntry("Validating createTaskDTO {}", createTaskDTO);
+    private void validateSaveTaskDTO(SaveTaskDTO SaveTaskDTO) {
+        log.trace("Validating SaveTaskDTO {}", SaveTaskDTO);
         StringBuilder sb = new StringBuilder();
 
-        if (createTaskDTO.getContent() == null) {
-            log.error("Attribute content has illegal value: {}", createTaskDTO.getContent());
+        if (SaveTaskDTO.getContent() == null) {
+            log.error("Attribute content has illegal value: {}", SaveTaskDTO.getContent());
             sb.append("Content cannot be null!\n");
-        }
-        if (createTaskDTO.getCreationDate() == null) {
-            log.error("Attribute creationDate has illegal value: {}", createTaskDTO.getCreationDate());
-            sb.append("Creation date cannot be null!\n");
-        }
-
-        if (sb.length() > 0) {
-            throw new ValidationException(sb.toString(), "CreateTask");
-        }
-    }
-
-    private void validateEditTaskDTO(EditTaskDTO editTaskDTO) {
-        log.trace("Validating editTaskDTO {}", editTaskDTO);
-        StringBuilder sb = new StringBuilder();
-
-        if (editTaskDTO.getContent() == null) {
-            log.error("Attribute content has illegal value: {}", editTaskDTO.getContent());
-            sb.append("Content cannot be null!\n");
-        }
-        if (editTaskDTO.getEditionDate() == null) {
-            log.error("Attribute editionDate has illegal value: {}", editTaskDTO.getEditionDate());
-            sb.append("Edition date cannot be null!\n");
         }
 
         if (sb.length() > 0) {

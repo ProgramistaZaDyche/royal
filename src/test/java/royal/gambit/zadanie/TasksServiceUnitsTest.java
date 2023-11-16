@@ -16,8 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Example;
 
-import royal.gambit.zadanie.DTOs.CreateTaskDTO;
-import royal.gambit.zadanie.DTOs.EditTaskDTO;
+import royal.gambit.zadanie.DTOs.SaveTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Mappers.TasksMapper;
@@ -75,10 +74,9 @@ public class TasksServiceUnitsTest {
     @Test
     public void createTaskCorrectDataPassing() {
         String content = "some content";
-        LocalDate creationDate = LocalDate.of(2023, 2, 14);
-        CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
+        LocalDate creationDate = LocalDate.now();
+        SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
                 .content(content)
-                .creationDate(creationDate)
                 .build();
         TaskEntity mappedEntity = TaskEntity.builder()
                 .content(content)
@@ -90,20 +88,19 @@ public class TasksServiceUnitsTest {
                 .creationDate(creationDate)
                 .build();
 
-        when(tasksMapper.createTaskDTOToEntity(createTaskDTO)).thenReturn(mappedEntity);
+        when(tasksMapper.saveTaskDTOCreateEntity(saveTaskDTO)).thenReturn(mappedEntity);
         when(tasksRepository.save(mappedEntity)).thenReturn(newEntity);
         when(tasksMapper.TaskEntityToShowDTO(newEntity)).thenReturn(any(ShowTaskDTO.class));
 
-        tasksService.createTask(createTaskDTO);
+        tasksService.createTask(saveTaskDTO);
     }
 
     @Test
     public void editTaskCorrectDataPassing() {
         Long id = new Long(3);
         String content = "Some content";
-        EditTaskDTO editTaskDTO = EditTaskDTO.builder()
+        SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
                 .content(content)
-                .editionDate(LocalDate.of(2045, 1, 3))
                 .build();
         TaskEntity mappedEntity = TaskEntity.builder()
                 .content(content)
@@ -114,11 +111,11 @@ public class TasksServiceUnitsTest {
                 .build();
         
         when(tasksRepository.findById(id)).thenReturn(Optional.of(mappedEntity));
-        when(tasksMapper.editTaskDTOToEntity(editTaskDTO)).thenReturn(mappedEntity);
+        when(tasksMapper.saveTaskDTOEditEntity(saveTaskDTO)).thenReturn(mappedEntity);
         when(tasksRepository.save(mappedEntity)).thenReturn(newEntity);
         when(tasksMapper.TaskEntityToShowDTO(newEntity)).thenReturn(any());
 
-        tasksService.editTask(id, editTaskDTO);
+        tasksService.editTask(id, saveTaskDTO);
     }
 
     @Test

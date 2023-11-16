@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import royal.gambit.zadanie.DTOs.CreateTaskDTO;
-import royal.gambit.zadanie.DTOs.EditTaskDTO;
+import royal.gambit.zadanie.DTOs.SaveTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Mappers.TasksMapper;
@@ -24,33 +23,33 @@ public class TasksMapperUnitTest {
     private TasksMapper tasksMapper;
 
     @Test
-    public void createTaskDTOToEntity() {
-        CreateTaskDTO dto = CreateTaskDTO.builder()
+    public void saveTaskDTOCreateEntity() {
+        LocalDate today = LocalDate.now();
+        SaveTaskDTO dto = SaveTaskDTO.builder()
                 .content("content")
-                .creationDate(LocalDate.of(2014, 10, 19))
                 .build();
 
-        TaskEntity entity = tasksMapper.createTaskDTOToEntity(dto);
+        TaskEntity entity = tasksMapper.saveTaskDTOCreateEntity(dto);
 
         assertNull(entity.getId());
         assertEquals(dto.getContent(), entity.getContent());
-        assertEquals(dto.getCreationDate(), entity.getCreationDate());
-        assertEquals(dto.getCreationDate(), entity.getEditionDate());
+        assertEquals(today, entity.getCreationDate());
+        assertEquals(today, entity.getEditionDate());
     }
 
     @Test
-    public void editTaskDTOToEntity() {
-        EditTaskDTO dto = EditTaskDTO.builder()
+    public void saveTaskDTOEditEntity() {
+        LocalDate today = LocalDate.now();
+        SaveTaskDTO dto = SaveTaskDTO.builder()
                 .content("content")
-                .editionDate(LocalDate.of(2014, 10, 19))
                 .build();
 
-        TaskEntity entity = tasksMapper.editTaskDTOToEntity(dto);
+        TaskEntity entity = tasksMapper.saveTaskDTOEditEntity(dto);
 
         assertNull(entity.getId());
         assertEquals(dto.getContent(), entity.getContent());
         assertNull(entity.getCreationDate());
-        assertEquals(dto.getEditionDate(), entity.getEditionDate());
+        assertEquals(today, entity.getEditionDate());
     }
 
     @Test
@@ -79,10 +78,9 @@ public class TasksMapperUnitTest {
                 .editionDate(LocalDate.of(2014, 10, 19))
                 .build();
 
-        EditTaskDTO dto = tasksMapper.TaskEntityToEditDTO(entity);
+        SaveTaskDTO dto = tasksMapper.TaskEntityToEditDTO(entity);
 
         assertEquals(entity.getContent(), dto.getContent());
-        assertEquals(entity.getEditionDate(), dto.getEditionDate());
     }
 
     @Test

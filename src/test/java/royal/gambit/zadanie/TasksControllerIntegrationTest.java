@@ -28,8 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import royal.gambit.zadanie.DTOs.CreateTaskDTO;
-import royal.gambit.zadanie.DTOs.EditTaskDTO;
+import royal.gambit.zadanie.DTOs.SaveTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Mappers.TasksMapper;
@@ -103,51 +102,52 @@ public class TasksControllerIntegrationTest {
 
   @Test
   public void createTaskUniqueTask() throws Exception {
-    CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
+    LocalDate today = LocalDate.now();
+    SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content("content")
-        .creationDate(LocalDate.of(2012, 12, 21))
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
-    String createTaskJSON = objectMapper.writeValueAsString(createTaskDTO);
+    String createTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
 
     mockMvc.perform(post("/tasks")
         .contentType(MediaType.APPLICATION_JSON)
         .content(createTaskJSON))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id", notNullValue(Long.class)))
-        .andExpect(jsonPath("$.content", is(createTaskDTO.getContent())))
-        .andExpect(jsonPath("$.creationDate", is(createTaskDTO.getCreationDate().toString())));
+        .andExpect(jsonPath("$.content", is(saveTaskDTO.getContent())))
+        .andExpect(jsonPath("$.creationDate", is(today.toString())))
+        .andExpect(jsonPath("$.editionDate", is(today.toString())));
   }
 
   @Test
-  @Sql(scripts = "classpath:sql/insertSingleTask.sql")
+  @Sql(scripts = "classpath:sql/insertSingleTaskTodaysDate.sql")
   public void createTaskAlreadyExistingTaskCheckDataCorrectness() throws Exception {
-    CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
+    LocalDate today = LocalDate.now();
+    SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content("Test Content")
-        .creationDate(LocalDate.of(2012, 12, 21))
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
-    String createTaskJSON = objectMapper.writeValueAsString(createTaskDTO);
+    String createTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
 
     mockMvc.perform(post("/tasks")
         .contentType(MediaType.APPLICATION_JSON)
         .content(createTaskJSON))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id", notNullValue(Long.class)))
-        .andExpect(jsonPath("$.content", is(createTaskDTO.getContent())))
-        .andExpect(jsonPath("$.creationDate", is(createTaskDTO.getCreationDate().toString())));
+        .andExpect(jsonPath("$.content", is(saveTaskDTO.getContent())))
+        .andExpect(jsonPath("$.creationDate", is(today.toString())))
+        .andExpect(jsonPath("$.editionDate", is(today.toString())));
   }
 
   @Test
-  @Sql(scripts = "classpath:sql/insertSingleTask.sql")
+  @Sql(scripts = "classpath:sql/insertSingleTaskTodaysDate.sql")
   public void createTaskAlreadyExistingTaskCheckTrulyCreated() throws Exception {
-    CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
+    SaveTaskDTO createTaskDTO = SaveTaskDTO.builder()
         .content("Test Content")
-        .creationDate(LocalDate.of(2012, 12, 21))
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -171,8 +171,7 @@ public class TasksControllerIntegrationTest {
 
   @Test
   public void createTaskInvalidDTOSent() throws Exception {
-    CreateTaskDTO createTaskDTO = CreateTaskDTO.builder()
-        .content("Test Content")
+    SaveTaskDTO createTaskDTO = SaveTaskDTO.builder()
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -189,36 +188,32 @@ public class TasksControllerIntegrationTest {
   @Sql(scripts = "classpath:sql/insertSingleTask.sql")
   public void editTaskExistingTask() throws Exception {
     String content = "Test Content";
-    LocalDate editionDate = LocalDate.of(2012, 12, 21);
-    EditTaskDTO editTaskDTO = EditTaskDTO.builder()
+    SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content(content)
-        .editionDate(editionDate)
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
-    String editTaskJSON = objectMapper.writeValueAsString(editTaskDTO);
+    String editTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
 
     mockMvc.perform(put("/tasks/1")
         .contentType(MediaType.APPLICATION_JSON)
         .content(editTaskJSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content", is(editTaskDTO.getContent())))
-        .andExpect(jsonPath("$.editionDate", is(editTaskDTO.getEditionDate().toString())));
+        .andExpect(jsonPath("$.content", is(saveTaskDTO.getContent())))
+        .andExpect(jsonPath("$.editionDate", is(LocalDate.now().toString())));
   }
 
   @Test
   public void editTaskNonExistingTask() throws Exception {
     String content = "Test Content";
-    LocalDate editionDate = LocalDate.of(2012, 12, 21);
-    EditTaskDTO editTaskDTO = EditTaskDTO.builder()
+    SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content(content)
-        .editionDate(editionDate)
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
-    String editTaskJSON = objectMapper.writeValueAsString(editTaskDTO);
+    String editTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
 
     mockMvc.perform(put("/tasks/1")
         .contentType(MediaType.APPLICATION_JSON)
@@ -229,14 +224,12 @@ public class TasksControllerIntegrationTest {
   @Test
   @Sql(scripts = "classpath:sql/insertSingleTask.sql")
   public void editTaskExistingTaskInvalidDTO() throws Exception {
-    String content = "Test Content";
-    EditTaskDTO editTaskDTO = EditTaskDTO.builder()
-        .content(content)
+    SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
-    String editTaskJSON = objectMapper.writeValueAsString(editTaskDTO);
+    String editTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
 
     mockMvc.perform(put("/tasks/1")
         .contentType(MediaType.APPLICATION_JSON)
