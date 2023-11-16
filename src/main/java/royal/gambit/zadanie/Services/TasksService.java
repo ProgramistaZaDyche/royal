@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import royal.gambit.zadanie.DTOs.CreateTaskDTO;
+import royal.gambit.zadanie.DTOs.EditTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
+import royal.gambit.zadanie.Exceptions.InvalidDTOException;
 import royal.gambit.zadanie.Exceptions.NonExistentRecordException;
 import royal.gambit.zadanie.Mappers.TasksMapper;
 import royal.gambit.zadanie.Repositories.TasksRepository;
@@ -42,6 +44,18 @@ public class TasksService {
         return tasksMapper.TaskEntityToShowDTO(newEntity);
     }
 
+    public ShowTaskDTO editTask(Long id, EditTaskDTO editTaskDTO) {
+        validateEditTaskDTO(editTaskDTO);
+        TaskEntity existingEntity = findTaskById(id);
+
+        TaskEntity editEntity = tasksMapper.editTaskDTOToEntity(editTaskDTO);
+        editEntity.setId(id);
+        editEntity.setCreationDate(existingEntity.getCreationDate());
+
+        TaskEntity newEntity = tasksRepository.save(editEntity);
+        return tasksMapper.TaskEntityToShowDTO(newEntity);
+    }
+
     private TaskEntity findTaskById(Long id) {
         return tasksRepository.findById(id)
                 .orElseThrow(() -> new NonExistentRecordException(String.format("There is no task with id = %d", id)));
@@ -58,6 +72,20 @@ public class TasksService {
 
         if (sb.length() > 0) {
             throw new InvalidDTOException(sb.toString(), "CreateTask");
+        }
+    }
+
+    private void validateEditTaskDTO(EditTaskDTO editTaskDTO) {
+        StringBuilder sb = new StringBuilder();
+        if (editTaskDTO.getContent() == null) {
+            sb.append("Content cannot be null!\n");
+        }
+        if (editTaskDTO.getEditionDate() == null) {
+            sb.append("Edition date cannot be null!\n");
+        }
+
+        if (sb.length() > 0) {
+            throw new InvalidDTOException(sb.toString(), "EditTask");
         }
     }
 }
