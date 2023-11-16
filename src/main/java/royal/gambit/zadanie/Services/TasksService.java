@@ -94,6 +94,8 @@ public class TasksService {
 
         if (SaveTaskDTO.getContent() == null) {
             sb.append("Content cannot be null!\n");
+        } else if(SaveTaskDTO.getContent().isEmpty()) {
+            sb.append("Content cannot be empty!\n");
         }
 
         if (sb.length() > 0) {
