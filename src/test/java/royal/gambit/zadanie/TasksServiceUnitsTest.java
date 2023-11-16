@@ -3,6 +3,7 @@ package royal.gambit.zadanie;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Example;
 
 import royal.gambit.zadanie.DTOs.CreateTaskDTO;
+import royal.gambit.zadanie.DTOs.EditTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Mappers.TasksMapper;
@@ -92,5 +94,29 @@ public class TasksServiceUnitsTest {
         when(tasksMapper.TaskEntityToShowDTO(newEntity)).thenReturn(any(ShowTaskDTO.class));
 
         tasksService.createTask(createTaskDTO);
+    }
+
+    @Test
+    public void editTaskCorrectDataPassing() {
+        Long id = new Long(3);
+        String content = "Some content";
+        EditTaskDTO editTaskDTO = EditTaskDTO.builder()
+                .content(content)
+                .editionDate(LocalDate.of(2045, 1, 3))
+                .build();
+        TaskEntity mappedEntity = TaskEntity.builder()
+                .content(content)
+                .build();
+        TaskEntity newEntity = TaskEntity.builder()
+                .id(id)
+                .content(content)
+                .build();
+        
+        when(tasksRepository.findById(id)).thenReturn(Optional.of(mappedEntity));
+        when(tasksMapper.editTaskDTOToEntity(editTaskDTO)).thenReturn(mappedEntity);
+        when(tasksRepository.save(mappedEntity)).thenReturn(newEntity);
+        when(tasksMapper.TaskEntityToShowDTO(newEntity)).thenReturn(any());
+
+        tasksService.editTask(id, editTaskDTO);
     }
 }
