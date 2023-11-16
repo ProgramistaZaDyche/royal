@@ -123,7 +123,7 @@ public class TasksServiceUnitsTest {
     }
 
     @Test
-    public void deleteTask() {
+    public void deleteTaskCorrectDataPassing() {
         Long id = 3L;
         TaskEntity taskEntity = TaskEntity.builder().build();
 
