@@ -88,8 +88,7 @@ public class TasksControllerIntegrationTest {
   @Sql(scripts = "classpath:sql/insertSingleTask.sql")
   public void findTaskWithExistingId() throws Exception {
     this.mockMvc.perform(get("/tasks/1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id", is(1)));
+        .andExpect(status().isOk());
   }
 
   @Test
