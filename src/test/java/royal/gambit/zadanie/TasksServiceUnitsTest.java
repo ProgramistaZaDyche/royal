@@ -64,12 +64,12 @@ public class TasksServiceUnitsTest {
 
     @Test
     public void findTaskCorrectDataPassing() {
-        Long id = new Long(4);
+        Long id = 4L;
         TaskEntity foundEntity = TaskEntity.builder()
                 .id(id)
                 .build();
 
-        when(tasksRepository.findById(new Long(4))).thenReturn(Optional.of(foundEntity));
+        when(tasksRepository.findById(id)).thenReturn(Optional.of(foundEntity));
         when(tasksMapper.TaskEntityToShowDTO(foundEntity)).thenReturn(any(ShowTaskDTO.class));
 
         tasksService.findTask(id);
@@ -87,7 +87,7 @@ public class TasksServiceUnitsTest {
                 .creationDate(creationDate)
                 .build();
         TaskEntity newEntity = TaskEntity.builder()
-                .id(new Long(4))
+                .id(4L)
                 .content(content)
                 .creationDate(creationDate)
                 .build();
@@ -101,7 +101,7 @@ public class TasksServiceUnitsTest {
 
     @Test
     public void editTaskCorrectDataPassing() {
-        Long id = new Long(3);
+        Long id = 3L;
         String content = "Some content";
         SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
                 .content(content)
@@ -124,7 +124,7 @@ public class TasksServiceUnitsTest {
 
     @Test
     public void deleteTask() {
-        Long id = new Long(3);
+        Long id = 3L;
         TaskEntity taskEntity = TaskEntity.builder().build();
 
         when(tasksRepository.findById(id)).thenReturn(Optional.of(taskEntity));
