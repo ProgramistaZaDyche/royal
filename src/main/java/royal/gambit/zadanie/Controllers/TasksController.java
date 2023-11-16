@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,5 +56,14 @@ public class TasksController {
             @NonNull @PathVariable Long id,
             @NonNull @RequestBody EditTaskDTO editTaskDTO) {
         return new ResponseEntity<>(tasksService.editTask(id, editTaskDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("Delete existing task")
+    public ResponseEntity<Void> deleteTask(
+        @NonNull @PathVariable Long id
+    ) {
+        tasksService.deleteTask(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

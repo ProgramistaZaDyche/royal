@@ -56,6 +56,11 @@ public class TasksService {
         return tasksMapper.TaskEntityToShowDTO(newEntity);
     }
 
+    public void deleteTask(Long id) {
+        TaskEntity taskEntity = findTaskById(id);
+        tasksRepository.delete(taskEntity);
+    }
+
     private TaskEntity findTaskById(Long id) {
         return tasksRepository.findById(id)
                 .orElseThrow(() -> new NonExistentRecordException(String.format("There is no task with id = %d", id)));
