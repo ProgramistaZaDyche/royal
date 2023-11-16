@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -105,14 +106,11 @@ public class TasksControllerIntegrationTest {
     SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content("content")
         .build();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    String createTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
+    String saveTaskJSON = serializeSaveTaskDTOToJSON(saveTaskDTO);
 
     mockMvc.perform(post("/tasks")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(createTaskJSON))
+        .content(saveTaskJSON))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id", notNullValue(Long.class)))
         .andExpect(jsonPath("$.content", is(saveTaskDTO.getContent())))
@@ -127,14 +125,11 @@ public class TasksControllerIntegrationTest {
     SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content("Test Content")
         .build();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    String createTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
+    String saveTaskJSON = serializeSaveTaskDTOToJSON(saveTaskDTO);
 
     mockMvc.perform(post("/tasks")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(createTaskJSON))
+        .content(saveTaskJSON))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id", notNullValue(Long.class)))
         .andExpect(jsonPath("$.content", is(saveTaskDTO.getContent())))
@@ -145,17 +140,17 @@ public class TasksControllerIntegrationTest {
   @Test
   @Sql(scripts = "classpath:sql/insertSingleTaskTodaysDate.sql")
   public void createTaskAlreadyExistingTaskCheckTrulyCreated() throws Exception {
-    SaveTaskDTO createTaskDTO = SaveTaskDTO.builder()
+    SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content("Test Content")
         .build();
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
-    String createTaskJSON = objectMapper.writeValueAsString(createTaskDTO);
+    String saveTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
 
     MvcResult result = mockMvc.perform(post("/tasks")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(createTaskJSON))
+        .content(saveTaskJSON))
         .andReturn();
 
     TaskEntity resultEntity = objectMapper.readValue(result.getResponse().getContentAsString(), TaskEntity.class);
@@ -170,16 +165,13 @@ public class TasksControllerIntegrationTest {
 
   @Test
   public void createTaskInvalidDTOSent() throws Exception {
-    SaveTaskDTO createTaskDTO = SaveTaskDTO.builder()
+    SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .build();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    String createTaskJSON = objectMapper.writeValueAsString(createTaskDTO);
+    String saveTaskJSON = serializeSaveTaskDTOToJSON(saveTaskDTO);
 
     mockMvc.perform(post("/tasks")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(createTaskJSON))
+        .content(saveTaskJSON))
         .andExpect(status().isBadRequest());
   }
 
@@ -190,14 +182,11 @@ public class TasksControllerIntegrationTest {
     SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content(content)
         .build();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    String editTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
+    String saveTaskJSON = serializeSaveTaskDTOToJSON(saveTaskDTO);
 
     mockMvc.perform(put("/tasks/1")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(editTaskJSON))
+        .content(saveTaskJSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content", is(saveTaskDTO.getContent())))
         .andExpect(jsonPath("$.editionDate", is(LocalDate.now().toString())));
@@ -209,14 +198,11 @@ public class TasksControllerIntegrationTest {
     SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .content(content)
         .build();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    String editTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
+    String saveTaskJSON = serializeSaveTaskDTOToJSON(saveTaskDTO);
 
     mockMvc.perform(put("/tasks/1")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(editTaskJSON))
+        .content(saveTaskJSON))
         .andExpect(status().isNotFound());
   }
 
@@ -225,14 +211,11 @@ public class TasksControllerIntegrationTest {
   public void editTaskExistingTaskInvalidDTO() throws Exception {
     SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
         .build();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    String editTaskJSON = objectMapper.writeValueAsString(saveTaskDTO);
+    String saveTaskJSON = serializeSaveTaskDTOToJSON(saveTaskDTO);
 
     mockMvc.perform(put("/tasks/1")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(editTaskJSON))
+        .content(saveTaskJSON))
         .andExpect(status().isBadRequest());
   }
 
@@ -247,5 +230,10 @@ public class TasksControllerIntegrationTest {
   public void deleteTaskNonExistingTask() throws Exception {
     mockMvc.perform(delete("/tasks/1"))
         .andExpect(status().isNotFound());
+  }
+
+  private String serializeSaveTaskDTOToJSON(SaveTaskDTO saveTaskDTO) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.writeValueAsString(saveTaskDTO);
   }
 }
