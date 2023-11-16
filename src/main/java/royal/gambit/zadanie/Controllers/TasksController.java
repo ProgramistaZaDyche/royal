@@ -52,9 +52,8 @@ public class TasksController {
     @PutMapping("/{id}")
     @ApiOperation("Edit existing task")
     public ResponseEntity<ShowTaskDTO> editTask(
-        @NonNull @PathVariable Long id,
-        @NonNull @RequestBody EditTaskDTO editTaskDTO
-    ) {
+            @NonNull @PathVariable Long id,
+            @NonNull @RequestBody EditTaskDTO editTaskDTO) {
         return new ResponseEntity<>(tasksService.editTask(id, editTaskDTO), HttpStatus.OK);
     }
 }
