@@ -93,7 +93,6 @@ public class TasksService {
         StringBuilder sb = new StringBuilder();
 
         if (SaveTaskDTO.getContent() == null) {
-            log.error("Attribute content has illegal value: {}", SaveTaskDTO.getContent());
             sb.append("Content cannot be null!\n");
         }
 
