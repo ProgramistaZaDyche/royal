@@ -1,6 +1,7 @@
 package royal.gambit.zadanie;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -118,5 +119,16 @@ public class TasksServiceUnitsTest {
         when(tasksMapper.TaskEntityToShowDTO(newEntity)).thenReturn(any());
 
         tasksService.editTask(id, editTaskDTO);
+    }
+
+    @Test
+    public void deleteTask() {
+        Long id = new Long(3);
+        TaskEntity taskEntity = TaskEntity.builder().build();
+
+        when(tasksRepository.findById(id)).thenReturn(Optional.of(taskEntity));
+        doNothing().when(tasksRepository).delete(taskEntity);
+
+        tasksService.deleteTask(id);
     }
 }
