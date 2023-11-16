@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import royal.gambit.zadanie.DTOs.CreateTaskDTO;
+import royal.gambit.zadanie.DTOs.EditTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
 import royal.gambit.zadanie.Mappers.TasksMapper;
@@ -181,6 +182,65 @@ public class TasksControllerIntegrationTest {
     mockMvc.perform(post("/tasks")
         .contentType(MediaType.APPLICATION_JSON)
         .content(createTaskJSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @Sql(scripts = "classpath:sql/insertSingleTask.sql")
+  public void editTaskExistingTask() throws Exception {
+    String content = "Test Content";
+    LocalDate editionDate = LocalDate.of(2012, 12, 21);
+    EditTaskDTO editTaskDTO = EditTaskDTO.builder()
+        .content(content)
+        .editionDate(editionDate)
+        .build();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    String editTaskJSON = objectMapper.writeValueAsString(editTaskDTO);
+
+    mockMvc.perform(put("/tasks/1")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(editTaskJSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content", is(editTaskDTO.getContent())))
+        .andExpect(jsonPath("$.editionDate", is(editTaskDTO.getEditionDate().toString())));
+  }
+
+  @Test
+  public void editTaskNonExistingTask() throws Exception {
+    String content = "Test Content";
+    LocalDate editionDate = LocalDate.of(2012, 12, 21);
+    EditTaskDTO editTaskDTO = EditTaskDTO.builder()
+        .content(content)
+        .editionDate(editionDate)
+        .build();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    String editTaskJSON = objectMapper.writeValueAsString(editTaskDTO);
+
+    mockMvc.perform(put("/tasks/1")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(editTaskJSON))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @Sql(scripts = "classpath:sql/insertSingleTask.sql")
+  public void editTaskExistingTaskInvalidDTO() throws Exception {
+    String content = "Test Content";
+    EditTaskDTO editTaskDTO = EditTaskDTO.builder()
+        .content(content)
+        .build();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    String editTaskJSON = objectMapper.writeValueAsString(editTaskDTO);
+
+    mockMvc.perform(put("/tasks/1")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(editTaskJSON))
         .andExpect(status().isBadRequest());
   }
 }
