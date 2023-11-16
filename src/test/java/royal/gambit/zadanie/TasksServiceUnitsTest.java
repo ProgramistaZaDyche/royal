@@ -1,5 +1,6 @@
 package royal.gambit.zadanie;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Example;
 import royal.gambit.zadanie.DTOs.SaveTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
 import royal.gambit.zadanie.Entities.TaskEntity;
+import royal.gambit.zadanie.Exceptions.NonExistentRecordException;
 import royal.gambit.zadanie.Mappers.TasksMapper;
 import royal.gambit.zadanie.Repositories.TasksRepository;
 import royal.gambit.zadanie.Services.TasksService;
@@ -76,6 +78,12 @@ public class TasksServiceUnitsTest {
     }
 
     @Test
+    public void findTaskNonExistentTask() {
+        when(tasksRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(NonExistentRecordException.class, () -> tasksService.findTask(4L));
+    }
+
+    @Test
     public void createTaskCorrectDataPassing() {
         String content = "some content";
         LocalDate creationDate = LocalDate.now();
@@ -123,6 +131,16 @@ public class TasksServiceUnitsTest {
     }
 
     @Test
+    public void editTaskNonExistentTask() {
+        SaveTaskDTO saveTaskDTO = SaveTaskDTO.builder()
+                .content("content")
+                .build();
+
+        when(tasksRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(NonExistentRecordException.class, () -> tasksService.editTask(2L, saveTaskDTO));
+    }
+
+    @Test
     public void deleteTaskCorrectDataPassing() {
         Long id = 3L;
         TaskEntity taskEntity = TaskEntity.builder().build();
@@ -131,5 +149,11 @@ public class TasksServiceUnitsTest {
         doNothing().when(tasksRepository).delete(taskEntity);
 
         tasksService.deleteTask(id);
+    }
+
+    @Test
+    public void deleteTaskNonExistentTask() {
+        when(tasksRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(NonExistentRecordException.class, () -> tasksService.deleteTask(4L));
     }
 }
