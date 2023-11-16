@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import io.swagger.annotations.ApiOperation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import royal.gambit.zadanie.DTOs.CreateTaskDTO;
 import royal.gambit.zadanie.DTOs.EditTaskDTO;
 import royal.gambit.zadanie.DTOs.ShowTaskDTO;
@@ -27,7 +26,6 @@ import royal.gambit.zadanie.Services.TasksService;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
-@Log4j2
 public class TasksController {
     private final TasksService tasksService;
 
@@ -35,7 +33,6 @@ public class TasksController {
     @ApiOperation("Get all or filtered tasks")
     public ResponseEntity<List<ShowTaskDTO>> findTasks(
             @Nullable @ModelAttribute ShowTaskDTO taskDTO) {
-        log.info("Received a GET request to /tasks");
         return new ResponseEntity<>(tasksService.findTasks(taskDTO), HttpStatus.OK);
     }
 
@@ -43,7 +40,6 @@ public class TasksController {
     @ApiOperation("Get task by its id")
     public ResponseEntity<ShowTaskDTO> findTask(
             @NonNull @PathVariable Long id) {
-        log.info("Received a GET request to /tasks/{}", id);
         return new ResponseEntity<>(tasksService.findTask(id), HttpStatus.OK);
     }
 
@@ -51,7 +47,6 @@ public class TasksController {
     @ApiOperation("Create new task")
     public ResponseEntity<ShowTaskDTO> createTask(
             @NonNull @RequestBody CreateTaskDTO createTaskDTO) {
-        log.info("Received a POST request to /tasks");
         return new ResponseEntity<>(tasksService.createTask(createTaskDTO), HttpStatus.CREATED);
     }
 
@@ -60,16 +55,13 @@ public class TasksController {
     public ResponseEntity<ShowTaskDTO> editTask(
             @NonNull @PathVariable Long id,
             @NonNull @RequestBody EditTaskDTO editTaskDTO) {
-        log.info("Received a PUT request to /tasks/{}", id);
         return new ResponseEntity<>(tasksService.editTask(id, editTaskDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete existing task")
     public ResponseEntity<Void> deleteTask(
-        @NonNull @PathVariable Long id
-    ) {
-        log.info("Received a DELETE request to /tasks/{}", id);
+            @NonNull @PathVariable Long id) {
         tasksService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
